@@ -47,15 +47,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* COL2ROW, ROW2COL */
 #define DIODE_DIRECTION COL2ROW
 
-//#define BACKLIGHT_PIN B7
-//#define BACKLIGHT_LEVELS 3
-#define BACKLIGHT_BREATHING
-#define RGBLIGHT_ANIMATIONS
+// #define BACKLIGHT_PIN B7
+// #define BACKLIGHT_LEVELS 3
+// #define BACKLIGHT_BREATHING
+
+// #define RGBLIGHT_ANIMATIONS
+#define RGBLIGHT_TWINKLE
+#define RGBLIGHT_EFFECT_TWINKLE_LIFE 400
+#define RGBLIGHT_EFFECT_TWINKLE_PROBABILITY 1/300
 #define RGB_DI_PIN C6
 #define RGB_MATRIX_MAXIMUM_BRIGHTNESS 120
-#ifdef RGBLIGHT_ENABLE
+// #ifdef RGBLIGHT_ENABLE
 #define RGBLED_NUM 10    // Number of LEDs
-#endif
+// #endif
 
 #define DRIVER_LED_TOTAL  58
 
