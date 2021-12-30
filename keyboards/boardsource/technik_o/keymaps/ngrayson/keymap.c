@@ -34,8 +34,8 @@ enum layers {
 #define TABCLOSE LT(0,KC_F3)
 #define PLS_MIN LT(0,KC_F4)
 #define RE_CACHE LT(0,KC_F5)
-#define CLOSE LT(0,KC_6)
-#define MEN_AST LT(0,KC_TAB)  
+#define QUIT LT(0,KC_6)
+#define MEN_AST LT(0,KC_TAB)
 #define FOC_1 LT(0,KC_A)
 #define FOC_2 LT(0,KC_S)
 #define FOC_3 LT(0,KC_D)
@@ -44,17 +44,14 @@ enum layers {
 #define DRK_BANG LT(0,KC_Z)
 #define VIS_HASH LT(0,KC_C)
 #define TAB_RES LT(0,KC_ESC)
+#define KVMONE LT(0,KC_LGUI)
+#define KVMTWO LT(0,KC_RGUI)
 
-
-enum custom_keycodes {
-  KVMONE,
-  KVMTWO,
-};
 
 
 #define VDLEFT LGUI(LCTL(KC_LEFT))
 #define VDRIGHT LGUI(LCTL(KC_RIGHT))
-#define SNAPUP LGUI(KC_UP) 
+#define SNAPUP LGUI(KC_UP)
 #define SNAPLEFT LGUI(KC_LEFT)
 #define SNAPDOWN LGUI(KC_DOWN)
 #define SNAPRIGHT LGUI(KC_RIGHT)
@@ -76,8 +73,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
   [_RAISE] = LAYOUT_ortho_4x12(
-    TAB_RES, TABL  ,   TABCLOSE, TABR,     CLOSE,   RE_CACHE,  KC_F6,  KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_F11,
-    MEN_AST,  FOC_1,   FOC_2,    FOC_3,    FOC_4,   AUD_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,     KC_F12, 
+    TAB_RES, TABL  ,   TABCLOSE, TABR,     QUIT,   RE_CACHE,  KC_F6,  KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_F11,
+    MEN_AST,  FOC_1,   FOC_2,    FOC_3,    FOC_4,   AUD_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,     KC_F12,
     PIK_WIN, DRK_BANG, KC_AT,    VIS_HASH, KC_DLR,  KC_PERC,  KC_CIRC, KC_AMPR, KC_LBRC, KC_RBRC, KC_PGUP,  KC_BSLASH,
     _______, _______,_______,    _______,  _______, _______,  _______, _______, _______, KC_HOME, KC_PGDN,  KC_END
   ),
@@ -96,8 +93,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case KVMONE:
           if (record->event.pressed) {
             SEND_STRING(SS_TAP(X_SCROLLLOCK) SS_TAP(X_SCROLLLOCK) "1");
-            rgb_matrix_set_color_all(72, 152, 180);
-            rgblight_setrgb(72, 152, 180);
           } else{
           }
           return false;
@@ -151,7 +146,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
         case TABR:
           if (record->tap.count && record->event.pressed) {
-              tap_code16(RCTL(RSFT(KC_TAB))); // Intercept tap function to send Ctrl-C
+              tap_code16(RCTL(KC_TAB)); // Intercept tap function to send Ctrl-C
           } else if (record->event.pressed) {
               tap_code16(KC_F2); // Intercept hold function to send Ctrl-V
           }
@@ -170,7 +165,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
               tap_code16(RCTL(KC_F5)); // Intercept hold function to send Ctrl-V
           }
           return false;
-        case CLOSE:
+        case QUIT:
           if (record->tap.count && record->event.pressed) {
               tap_code16(KC_F4); // Intercept tap function to send Ctrl-C
           } else if (record->event.pressed) {
