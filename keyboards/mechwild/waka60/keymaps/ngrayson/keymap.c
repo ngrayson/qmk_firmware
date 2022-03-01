@@ -1,4 +1,4 @@
-/* Copyright 2020 Boardsource
+/* Copyright 2021 Kyle McCreery
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include QMK_KEYBOARD_H
+ #include QMK_KEYBOARD_H
 
-enum layers {
+// Defines names for use in layer keycodes and the keymap
+enum layer_names {
     _MAIN,
     _RAISE,
     _LOWER,
 };
+
 
 // Readability keycodes
 #define LOWER   MO(_LOWER)
@@ -62,30 +64,32 @@ enum layers {
 #define VDTVIEW LGUI(KC_TAB)
 #define SH_TAB LSFT_T(KC_TAB)
 #define SH_SLS RSFT_T(KC_SLSH)
+#define ZOOMIN RCTL_T(KC_PLUS)
+#define ZOOMOUT RCTL_T(KC_MINUS)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
-  [_MAIN] = LAYOUT_ortho_4x12(
-    ES_TSK,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    PLS_MIN,
-    KC_GRV,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-    SH_TAB,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    COM_PR,  DOT_PR,  KC_UP,   SH_SLS,
-    KC_LCTL, KC_LGUI, LOWER,  KC_LALT,  RAISE,   KC_SPC, KC_BSPC,  KC_ENT,    KC_DEL,   KC_LEFT, KC_DOWN, KC_RGHT
-  ),
-
-  [_RAISE] = LAYOUT_ortho_4x12(
-    TAB_RES, TABL  ,   TABCLOSE, TABR,     QUIT,   RE_CACHE,  KC_F6,  KC_F7,   KC_F8,   KC_F9,   KC_F10,   KC_F11,
-    MEN_AST,  FOC_1,   FOC_2,    FOC_3,    FOC_4,   AUD_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,     KC_F12,
-    PIK_WIN, DRK_BANG, KC_AT,    VIS_HASH, KC_DLR,  KC_PERC,  KC_CIRC, KC_AMPR, KC_LBRC, KC_RBRC, KC_PGUP,  KC_BSLASH,
-    _______, _______,_______,    _______,  _______, _______,  _______, _______, _______, KC_HOME, KC_PGDN,  KC_END
-  ),
-
-  [_LOWER] = LAYOUT_ortho_4x12(
-    _______, VDLEFT,   SNAPUP,   VDRIGHT,   _______,  _______, RGB_M_P, RGB_VAD, RGB_SAI, RGB_VAI, _______, RESET,
-    _______, SNAPLEFT, MAXIMIZE, SNAPRIGHT, _______,  _______, _______, RGB_HUD, RGB_SAD, RGB_HUI, _______, KC_POWER,
-    PIK_WIN, VDTVIEW,  SNAPDOWN, LOCK,      _______,  _______, _______, _______, _______, _______, KC_VOLU, KC_MPLY,
-    KVMONE,  KVMTWO,   _______,  RGB_MOD,   RGB_TOG,  _______, _______, _______, _______, KC_MPRV, KC_VOLD, KC_MNXT
-  )
-
+    /* Base */
+    [_MAIN] = LAYOUT(
+    ES_TSK,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,             KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
+    KC_GRV,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,             KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
+    KC_LGUI, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,             KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT, KC_ENT,
+    SH_TAB,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,   KC_MUTE,  KC_N,    KC_M,    COM_PR,  DOT_PR,  KC_UP,   SH_SLS,
+    KC_LCTL, KC_LALT, RAISE,   MO(1),   KC_SPC,  KC_SPC, KC_SPC,   KC_SPC,  KC_SPC,  MO(1),   KC_LEFT, KC_DOWN, KC_RGHT
+    ),
+    [_RAISE] = LAYOUT(
+    TAB_RES, TABL  ,  TABCLOSE,TABR,     QUIT,    RE_CACHE,         KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_DEL,
+    KC_TRNS, VDLEFT,  SNAPUP,  VDRIGHT,  KC_TRNS, KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+    LOWER,   SNAPLEFT,MAXIMIZE,SNAPRIGHT,DRK_BANG,AUD_5,            KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+    PIK_WIN, VDTVIEW, SNAPDOWN,LOCK,     VIS_HASH,KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LBRC, KC_RBRC, KC_PGUP, KC_BSLASH,
+    KVMONE,  KVMTWO,  KC_TRNS, KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_HOME, KC_PGDN, KC_END
+    ),
+    [_LOWER] = LAYOUT(
+    KC_TRNS, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,            KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_DEL,
+    KC_TRNS, AU_TOG,  RGB_TOG, KC_TRNS, KC_TRNS, KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+    KC_TRNS, MU_TOG,  RGB_MOD, KC_TRNS, KC_TRNS, KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+    KC_TRNS, MU_MOD,  RGB_RMOD, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+    KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS
+    )
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -230,4 +234,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           return false;
     }
     return true;
+}
+
+bool encoder_update_user(uint8_t index, bool clockwise) {
+    if (get_highest_layer(layer_state|default_layer_state) > 0) {
+        if (index == 0) { //first encoder
+            if (clockwise) {
+                tap_code_delay(KC_VOLU, 5);
+            } else {
+                tap_code_delay(KC_VOLD, 5);
+            }
+        }
+    } else {  /* Layer 0 */
+        if (index == 0) { //first encoder
+            if (clockwise) {
+                tap_code(ZOOMIN);
+            } else {
+                tap_code(ZOOMOUT);
+            }
+        }
+    }
+    return false;
 }
