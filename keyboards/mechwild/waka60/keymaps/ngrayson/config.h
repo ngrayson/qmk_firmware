@@ -21,7 +21,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define AUDIO_PWM_DRIVER PWMD1
 #define AUDIO_PWM_CHANNEL 1
 #define AUDIO_STATE_TIMER GPTD4
-
-#define ENCODERS_PAD_A { B12 }
-#define ENCODERS_PAD_B { B13 }
-#define ENCODER_RESOLUTION 4

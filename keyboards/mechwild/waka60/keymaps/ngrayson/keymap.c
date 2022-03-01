@@ -78,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [_RAISE] = LAYOUT(
     TAB_RES, TABL  ,  TABCLOSE,TABR,     QUIT,    RE_CACHE,         KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_DEL,
-    KC_TRNS, VDLEFT,  SNAPUP,  VDRIGHT,  KC_TRNS, KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+    KC_TRNS, VDLEFT,  SNAPUP,  VDRIGHT,  KC_TRNS, KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, QK_BOOT,
     LOWER,   SNAPLEFT,MAXIMIZE,SNAPRIGHT,DRK_BANG,AUD_5,            KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
     PIK_WIN, VDTVIEW, SNAPDOWN,LOCK,     VIS_HASH,KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LBRC, KC_RBRC, KC_PGUP, KC_BSLASH,
     KVMONE,  KVMTWO,  KC_TRNS, KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_HOME, KC_PGDN, KC_END
@@ -248,9 +248,9 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     } else {  /* Layer 0 */
         if (index == 0) { //first encoder
             if (clockwise) {
-                tap_code(ZOOMIN);
+                tap_code16(LCTL(KC_PLUS));
             } else {
-                tap_code(ZOOMOUT);
+                tap_code16(LCTL(KC_MINUS));
             }
         }
     }
