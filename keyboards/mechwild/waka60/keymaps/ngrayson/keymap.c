@@ -24,6 +24,11 @@ enum layer_names {
 };
 
 
+// fancy alt tab timer
+bool is_alt_tab_active = false;
+uint16_t alt_tab_timer = 0;
+
+
 // Readability keycodes
 #define LOWER   MO(_LOWER)
 #define RAISE   MO(_RAISE)
@@ -60,7 +65,7 @@ enum layer_names {
 #define LOCK LGUI(KC_L)
 #define MAXIMIZE HYPR(KC_M)
 #define AUDIOSRC MEH(KC_G)
-#define PIK_WIN LCA(KC_TAB)
+#define PIK_WIN LT(0,KC_F22)
 #define VDTVIEW LGUI(KC_TAB)
 #define SH_TAB LSFT_T(KC_TAB)
 #define SH_SLS RSFT_T(KC_SLSH)
@@ -70,16 +75,16 @@ enum layer_names {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* Base */
     [_MAIN] = LAYOUT(
-    ES_TSK,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,             KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
-    KC_GRV,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,             KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
-    KC_LGUI, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,             KC_H,    KC_J,    KC_K,    KC_L,    KC_QUOT, KC_ENT,
+    ES_TSK,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,             KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_EQUAL,
+    KC_GRV,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,             KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_MINUS,
+    KC_LGUI, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,             KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN , KC_QUOT,
     SH_TAB,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,   KC_MUTE,  KC_N,    KC_M,    COM_PR,  DOT_PR,  KC_UP,   SH_SLS,
-    KC_LCTL, KC_LALT, RAISE,   MO(1),   KC_SPC,  KC_SPC, KC_SPC,   KC_SPC,  KC_SPC,  MO(1),   KC_LEFT, KC_DOWN, KC_RGHT
+    KC_LCTL, KC_LALT, RAISE,   MO(1),   KC_SPC,  KC_SPC, KC_SPC,   KC_SPC,  KC_SPC,  MO(1),   KC_BSPC, KC_ENT, KC_DEL
     ),
     [_RAISE] = LAYOUT(
-    TAB_RES, TABL  ,  TABCLOSE,TABR,     QUIT,    RE_CACHE,         KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_DEL,
-    KC_TRNS, VDLEFT,  SNAPUP,  VDRIGHT,  KC_TRNS, KC_TRNS,          KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, QK_BOOT,
-    LOWER,   SNAPLEFT,MAXIMIZE,SNAPRIGHT,DRK_BANG,AUD_5,            KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,
+    TAB_RES, TABL  ,  TABCLOSE,TABR,     QUIT,    RE_CACHE,         KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  QK_BOOT,
+    KC_TRNS, VDLEFT,  SNAPUP,  VDRIGHT,  KC_TRNS, KC_TRNS,          KC_TRNS, KC_TRNS, KC_UP,   KC_TRNS, KC_TRNS, KC_TRNS,
+    LOWER,   SNAPLEFT,MAXIMIZE,SNAPRIGHT,DRK_BANG,AUD_5,            KC_TRNS, KC_LEFT, KC_DOWN, KC_RIGHT,KC_TRNS, KC_TRNS,
     PIK_WIN, VDTVIEW, SNAPDOWN,LOCK,     VIS_HASH,KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_LBRC, KC_RBRC, KC_PGUP, KC_BSLASH,
     KVMONE,  KVMTWO,  KC_TRNS, KC_TRNS,  KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_HOME, KC_PGDN, KC_END
     ),
@@ -96,16 +101,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case KVMONE:
           if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_SCROLLLOCK) SS_TAP(X_SCROLLLOCK) "1" SS_TAP(X_ENTER));
+              SEND_STRING(SS_TAP(X_SCROLLLOCK) SS_DELAY(20) SS_TAP(X_SCROLLLOCK) SS_DELAY(20) "1" SS_DELAY(20) "\n");  // SS_TAP(X_ENTER)
           } else{
           }
           return false;
         case KVMTWO:
           if (record->event.pressed) {
-            SEND_STRING(SS_TAP(X_SCROLLLOCK) SS_TAP(X_SCROLLLOCK) "2" SS_TAP(X_ENTER));
+              SEND_STRING(SS_TAP(X_SCROLLLOCK) SS_DELAY(20) SS_TAP(X_SCROLLLOCK) SS_DELAY(20) "2" SS_DELAY(20) "\n");  // SS_TAP(X_ENTER)
           } else{
           }
           return false;
+        case PIK_WIN:
+            if (record->event.pressed) {
+                if (!is_alt_tab_active) {
+                    is_alt_tab_active = true;
+                    register_code(KC_LALT);
+                }
+                alt_tab_timer = timer_read();
+                register_code(KC_TAB);
+            } else {
+                unregister_code(KC_TAB);
+            }
+            break;
         case ES_TSK:
           if (record->tap.count && record->event.pressed) {
               tap_code16(KC_ESC); // Intercept tap function to send Ctrl-C
@@ -256,3 +273,14 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     }
     return false;
 }
+
+// alt tab timer
+void matrix_scan_user(void) {
+  if (is_alt_tab_active) {
+    if (timer_elapsed(alt_tab_timer) > 1000) {
+      unregister_code(KC_LALT);
+      is_alt_tab_active = false;
+    }
+  }
+}
+
